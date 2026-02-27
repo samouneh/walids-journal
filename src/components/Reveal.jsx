@@ -24,7 +24,13 @@ export default function Reveal({ children, variant = 'up', delay = 0, className 
           observer.unobserve(el); // only animate once
         }
       },
-      { threshold: 0.12 }
+      {
+        threshold: 0.08,
+        // Pull the bottom trigger line 60px up — elements must be
+        // meaningfully inside the viewport before they fire, giving
+        // a clear "sliding up into view from below" feel as you scroll.
+        rootMargin: '0px 0px -60px 0px',
+      }
     );
     observer.observe(el);
     return () => observer.disconnect();

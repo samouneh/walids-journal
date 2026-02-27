@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Nav from './components/Nav';
 import Home from './pages/Home';
@@ -12,6 +13,16 @@ seedIfEmpty();
 
 export default function App() {
   const { posts, addPost, editPost, removePost, togglePin } = usePosts();
+
+  // Safety fallback: ensure loader is removed even if the JS inside index.html fails
+  useEffect(() => {
+    const t = setTimeout(() => {
+      const loader = document.getElementById('page-loader');
+      loader?.remove();
+      document.getElementById('root')?.classList.add('page-ready');
+    }, 1400); // delay (0.05s) + bar (0.7s) + fadeout (0.45s) + buffer
+    return () => clearTimeout(t);
+  }, []);
 
   return (
     <BrowserRouter>

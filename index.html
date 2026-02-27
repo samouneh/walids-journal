@@ -6,9 +6,301 @@
     <title>Walid's Journal</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+      /* ── Page loader — entirely JS-driven ── */
+      #page-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        /* Subtle radial gradient for depth — no big blobs */
+        background: radial-gradient(ellipse at 30% 45%, #0d1b38 0%, #080e1c 65%);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      /* Centre area */
+      .pl-center {
+        position: relative;
+        z-index: 1;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0;
+      }
+
+      .pl-initials {
+        font-family: 'Playfair Display', Georgia, serif;
+        font-size: clamp(0.85rem, 2vw, 1.1rem);
+        font-weight: 700;
+        color: rgba(255,255,255,0.25);
+        letter-spacing: 0.5em;
+        text-transform: uppercase;
+        margin: 0 0 2rem;
+      }
+
+      /* Giant counter */
+      .pl-count-row {
+        display: flex;
+        align-items: baseline;
+        line-height: 1;
+        margin-bottom: 2.2rem;
+      }
+
+      #pl-num {
+        font-family: 'Inter', system-ui, sans-serif;
+        font-size: clamp(6rem, 16vw, 11rem);
+        font-weight: 800;
+        color: #ffffff;
+        letter-spacing: -0.05em;
+        line-height: 1;
+        min-width: 3ch;
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .pl-sym {
+        font-family: 'Inter', system-ui, sans-serif;
+        font-size: clamp(1.8rem, 4.5vw, 3.5rem);
+        font-weight: 300;
+        color: rgba(255,255,255,0.2);
+        margin-left: 0.15em;
+        align-self: flex-start;
+        margin-top: 0.5em;
+      }
+
+      /* ── Orbiting circles ── */
+      .pl-orbit-wrap {
+        position: relative;
+        width: 220px;
+        height: 72px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .pl-circle {
+        position: absolute;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        left: 50%;
+        top: 50%;
+        /* JS controls transform; mix-blend-mode makes overlaps glow brighter */
+        mix-blend-mode: screen;
+      }
+
+      .pl-c1 {
+        background: radial-gradient(circle at 38% 35%,
+          hsl(213,100%,82%) 0%,
+          hsl(213,95%,60%)  45%,
+          hsla(213,90%,52%,.35) 68%,
+          transparent 78%
+        );
+        box-shadow: 0 0 18px 5px hsla(213,95%,58%,.30);
+      }
+      .pl-c2 {
+        background: radial-gradient(circle at 38% 35%,
+          hsl(258,90%,84%) 0%,
+          hsl(258,80%,65%)  45%,
+          hsla(258,75%,55%,.30) 68%,
+          transparent 78%
+        );
+        box-shadow: 0 0 18px 5px hsla(258,80%,60%,.25);
+      }
+      .pl-c3 {
+        background: radial-gradient(circle at 38% 35%,
+          hsl(192,95%,74%) 0%,
+          hsl(192,90%,54%)  45%,
+          hsla(192,85%,46%,.30) 68%,
+          transparent 78%
+        );
+        box-shadow: 0 0 18px 5px hsla(192,90%,52%,.25);
+      }
+
+      /* Bottom bar */
+      .pl-bottom {
+        position: relative;
+        z-index: 1;
+      }
+
+      .pl-labels {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 2.5rem 0.75rem;
+      }
+
+      .pl-label-name {
+        font-family: 'Inter', system-ui, sans-serif;
+        font-size: 0.6rem;
+        font-weight: 600;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: rgba(255,255,255,0.18);
+      }
+
+      #pl-pct {
+        font-family: 'Inter', system-ui, sans-serif;
+        font-size: 0.6rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        color: rgba(255,255,255,0.18);
+        font-variant-numeric: tabular-nums;
+      }
+
+      .pl-track {
+        width: 100%;
+        height: 3px;
+        background: rgba(255,255,255,0.05);
+      }
+
+      #pl-bar-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(
+          to right,
+          hsl(213,90%,65%),
+          hsl(240,80%,70%),
+          hsl(258,80%,72%)
+        );
+      }
+
+      /* Page starts blurred/bright; transitions to sharp when loader exits */
+      #root {
+        filter: blur(14px) brightness(1.35);
+        transition: filter 0.55s ease-out;
+      }
+      #root.page-ready { filter: none; }
+    </style>
   </head>
   <body>
+    <div id="page-loader" aria-hidden="true">
+      <div class="pl-center">
+        <p class="pl-initials">W &middot; M</p>
+
+        <div class="pl-count-row">
+          <span id="pl-num">0</span>
+          <span class="pl-sym">%</span>
+        </div>
+
+        <!-- 3 orbiting circles -->
+        <div class="pl-orbit-wrap">
+          <div class="pl-circle pl-c1" id="pl-c1"></div>
+          <div class="pl-circle pl-c2" id="pl-c2"></div>
+          <div class="pl-circle pl-c3" id="pl-c3"></div>
+        </div>
+      </div>
+
+      <div class="pl-bottom">
+        <div class="pl-labels">
+          <span class="pl-label-name">Walid&rsquo;s Journal</span>
+          <span id="pl-pct">0%</span>
+        </div>
+        <div class="pl-track">
+          <div id="pl-bar-fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        var numEl = document.getElementById('pl-num');
+        var pctEl = document.getElementById('pl-pct');
+        var barEl = document.getElementById('pl-bar-fill');
+        var c1    = document.getElementById('pl-c1');
+        var c2    = document.getElementById('pl-c2');
+        var c3    = document.getElementById('pl-c3');
+
+        var DELAY = 50;
+        var DUR   = 700;
+        var t0    = null;
+
+        /* fast burst → slow crawl → fast finish */
+        function ease(t) {
+          if (t <= 0.16) return (t / 0.16) * 0.55;
+          if (t <= 0.38) return 0.55 + ((t - 0.16) / 0.22) * 0.12;
+          if (t <= 0.58) return 0.67 + ((t - 0.38) / 0.20) * 0.07;
+          if (t <= 0.74) return 0.74 + ((t - 0.58) / 0.16) * 0.06;
+          if (t <= 0.87) return 0.80 + ((t - 0.74) / 0.13) * 0.11;
+          return           0.91 + ((t - 0.87) / 0.13) * 0.09;
+        }
+
+        /*
+         * Three circles on the same elliptical track, different angular speeds:
+         *   c1: 1.20 rot/s — medium
+         *   c2: 1.95 rot/s — fast  (laps c1 ~every 1.3s → they collide repeatedly)
+         *   c3: 0.65 rot/s — slow  (c2 laps c3 ~every 0.8s → more collisions)
+         * Initial offsets: evenly spaced (0°, 120°, 240°) so they start as a nice triangle
+         */
+        var RX = 78;   /* orbit x-radius */
+        var RY = 24;   /* orbit y-radius  (flattened = perspective feel) */
+        var TAU = Math.PI * 2;
+
+        function animateCircles(s) {
+          var a1 = s * 1.20 * TAU;
+          var a2 = s * 1.95 * TAU + TAU / 3;       /* +120° */
+          var a3 = s * 0.65 * TAU + (2 * TAU) / 3; /* +240° */
+
+          function pos(c, a) {
+            if (!c) return;
+            var x = Math.cos(a) * RX;
+            var y = Math.sin(a) * RY;
+            c.style.transform =
+              'translate(calc(-50% + ' + x.toFixed(2) + 'px), calc(-50% + ' + y.toFixed(2) + 'px))';
+          }
+
+          pos(c1, a1);
+          pos(c2, a2);
+          pos(c3, a3);
+        }
+
+        function tick(now) {
+          if (t0 === null) t0 = now;
+          var elapsed = now - t0;
+          var secs    = elapsed / 1000;
+
+          /* circles animate from the very first frame */
+          animateCircles(secs);
+
+          /* counter + bar start after DELAY */
+          if (elapsed >= DELAY) {
+            var t   = Math.min((elapsed - DELAY) / DUR, 1);
+            var pct = ease(t) * 100;
+            var val = Math.round(pct);
+
+            if (numEl) numEl.textContent = val;
+            if (pctEl) pctEl.textContent = val + '%';
+            if (barEl) barEl.style.width = pct + '%';
+
+            if (t >= 1) {
+              var loader = document.getElementById('page-loader');
+              var root   = document.getElementById('root');
+              if (loader) {
+                loader.style.transition    = 'opacity 0.45s ease-in-out';
+                loader.style.opacity       = '0';
+                loader.style.pointerEvents = 'none';
+                setTimeout(function () {
+                  if (loader && loader.parentNode) loader.parentNode.removeChild(loader);
+                }, 480);
+              }
+              /* Trigger blur-to-clear reveal on the page content */
+              if (root) root.classList.add('page-ready');
+              return;
+            }
+          }
+
+          requestAnimationFrame(tick);
+        }
+
+        requestAnimationFrame(tick);
+      })();
+    </script>
+
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
