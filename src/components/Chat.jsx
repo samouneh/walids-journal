@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import ReactMarkdown from 'react-markdown';
 import '../styles/chat.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
@@ -91,22 +92,30 @@ export default function Chat() {
   return (
     <>
       {/* Floating button */}
-      <button
-        className="chat-fab"
-        onClick={() => setOpen(o => !o)}
-        aria-label={open ? 'Close chat' : 'Ask about Walid'}
-        title="Ask about Walid"
-      >
-        {open ? (
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-            <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
-        ) : (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-          </svg>
-        )}
-      </button>
+      <div className={`chat-fab-wrapper${open ? ' open' : ''}`}>
+        {!open && <>
+          <span className="spark spark-1" />
+          <span className="spark spark-2" />
+          <span className="spark spark-3" />
+          <span className="spark spark-4" />
+        </>}
+        <button
+          className="chat-fab"
+          onClick={() => setOpen(o => !o)}
+          aria-label={open ? 'Close chat' : 'Ask about Walid'}
+          title="Ask about Walid"
+        >
+          {open ? (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          ) : (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+          )}
+        </button>
+      </div>
 
       {/* Chat panel */}
       {open && (
@@ -139,7 +148,11 @@ export default function Chat() {
 
             {messages.map((msg, i) => (
               <div key={i} className={`chat-msg ${msg.role}`}>
-                <div className="chat-bubble">{msg.content}</div>
+                <div className="chat-bubble">
+                  {msg.role === 'assistant'
+                    ? <ReactMarkdown>{msg.content}</ReactMarkdown>
+                    : msg.content}
+                </div>
               </div>
             ))}
 

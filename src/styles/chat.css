@@ -1,10 +1,15 @@
 /* ── Chat Widget ─────────────────────────────────────────── */
 
-.chat-fab {
+.chat-fab-wrapper {
   position: fixed;
   bottom: 1.75rem;
   right: 1.75rem;
   z-index: 1000;
+  width: 52px;
+  height: 52px;
+}
+
+.chat-fab {
   width: 52px;
   height: 52px;
   border-radius: 50%;
@@ -17,12 +22,49 @@
   justify-content: center;
   box-shadow: 0 4px 16px rgba(30, 58, 95, 0.35);
   transition: transform 0.2s cubic-bezier(.16,1,.3,1), box-shadow 0.2s;
+  animation: fab-breathe 3s ease-in-out infinite;
 }
 .chat-fab:hover {
-  transform: scale(1.08);
-  box-shadow: 0 6px 24px rgba(30, 58, 95, 0.45);
+  transform: scale(1.1);
+  box-shadow: 0 6px 28px rgba(30, 58, 95, 0.5);
+  animation: none;
+}
+.chat-fab-wrapper.open .chat-fab {
+  animation: none;
 }
 .chat-fab svg { pointer-events: none; }
+
+@keyframes fab-breathe {
+  0%, 100% { transform: scale(1);    box-shadow: 0 4px 16px rgba(30,58,95,0.35); }
+  50%       { transform: scale(1.06); box-shadow: 0 6px 24px rgba(30,58,95,0.5); }
+}
+
+/* ── Sparks ──────────────────────────────────────────────── */
+
+.spark {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: spark-orbit 3s ease-in-out infinite;
+}
+.spark::before {
+  content: '✦';
+  font-size: 10px;
+  color: #f0b429;
+  text-shadow: 0 0 4px rgba(240,180,41,0.8);
+}
+
+.spark-1 { top: -8px;  left: 50%;  animation-delay: 0s;    animation-duration: 2.8s; }
+.spark-2 { top: 50%;   right: -8px; animation-delay: 0.7s; animation-duration: 3.2s; }
+.spark-3 { bottom: -6px; left: 30%; animation-delay: 1.4s; animation-duration: 2.6s; }
+.spark-4 { top: 20%;   left: -8px;  animation-delay: 2.1s; animation-duration: 3.0s; }
+
+@keyframes spark-orbit {
+  0%, 100% { opacity: 0;   transform: scale(0.5) translateY(0); }
+  20%       { opacity: 1;   transform: scale(1)   translateY(-4px); }
+  50%       { opacity: 0.8; transform: scale(1.2) translateY(-8px); }
+  80%       { opacity: 0.4; transform: scale(0.8) translateY(-4px); }
+}
 
 /* ── Panel ───────────────────────────────────────────────── */
 
@@ -125,9 +167,14 @@
   border-radius: 14px;
   font-size: 0.875rem;
   line-height: 1.55;
-  white-space: pre-wrap;
   word-break: break-word;
 }
+.chat-bubble p  { margin: 0 0 0.4rem; }
+.chat-bubble p:last-child { margin-bottom: 0; }
+.chat-bubble strong { font-weight: 700; }
+.chat-bubble em { font-style: italic; }
+.chat-bubble ul, .chat-bubble ol { margin: 0.25rem 0 0.4rem 1.2rem; padding: 0; }
+.chat-bubble li { margin-bottom: 0.15rem; }
 .chat-msg.user .chat-bubble {
   background: var(--accent);
   color: #fff;
@@ -268,5 +315,5 @@
     border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     height: 70vh;
   }
-  .chat-fab { bottom: 1.25rem; right: 1.25rem; }
+  .chat-fab-wrapper { bottom: 1.25rem; right: 1.25rem; }
 }
