@@ -1,30 +1,22 @@
 import { useState, useCallback } from 'react';
-import { getPosts, createPost, updatePost, deletePost, togglePin as togglePinStorage } from '../utils/storage';
+import {
+  getPosts,
+  createPost,
+  updatePost,
+  deletePost,
+  togglePin as togglePinStorage,
+  toggleInProgress as toggleInProgressStorage,
+} from '../utils/storage';
 
 export function usePosts() {
   const [posts, setPosts] = useState(() => getPosts());
 
-  const refresh = useCallback(() => setPosts(getPosts()), []);
+  const refresh          = useCallback(() => setPosts(getPosts()), []);
+  const addPost          = useCallback((fields) => setPosts(createPost(fields)), []);
+  const editPost         = useCallback((id, fields) => setPosts(updatePost(id, fields)), []);
+  const removePost       = useCallback((id) => setPosts(deletePost(id)), []);
+  const togglePin        = useCallback((id) => setPosts(togglePinStorage(id)), []);
+  const toggleInProgress = useCallback((id) => setPosts(toggleInProgressStorage(id)), []);
 
-  const addPost = useCallback((fields) => {
-    createPost(fields);
-    setPosts(getPosts());
-  }, []);
-
-  const editPost = useCallback((id, fields) => {
-    updatePost(id, fields);
-    setPosts(getPosts());
-  }, []);
-
-  const removePost = useCallback((id) => {
-    deletePost(id);
-    setPosts(getPosts());
-  }, []);
-
-  const togglePin = useCallback((id) => {
-    togglePinStorage(id);
-    setPosts(getPosts());
-  }, []);
-
-  return { posts, refresh, addPost, editPost, removePost, togglePin };
+  return { posts, refresh, addPost, editPost, removePost, togglePin, toggleInProgress };
 }

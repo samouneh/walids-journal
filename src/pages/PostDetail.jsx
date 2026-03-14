@@ -1,14 +1,9 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import Reveal from '../components/Reveal';
+import { catSlug, formatDateLong, readingTime } from '../utils/format';
 
-function formatDate(iso) {
-  return new Date(iso).toLocaleDateString('en-GB', {
-    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
-  });
-}
-
-export default function PostDetail({ posts, onDelete, onTogglePin }) {
+export default function PostDetail({ posts, onDelete, onTogglePin, onToggleInProgress }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const post = posts.find((p) => p.id === id);
@@ -29,19 +24,33 @@ export default function PostDetail({ posts, onDelete, onTogglePin }) {
     }
   }
 
+  const isAnalysis = post.type === 'analysis';
+
   return (
-    <div className="post-detail-layout">
+    <div className={isAnalysis ? 'post-detail-layout post-detail-layout--analysis' : 'post-detail-layout'}>
       <Reveal>
-      <article className="post-detail">
-        <Link to="/" className="back-link">← Back</Link>
+      <article className={isAnalysis ? 'post-detail post-detail--analysis' : 'post-detail'}>
+        <Link to={isAnalysis ? '/research' : '/'} className="back-link">
+          ← {isAnalysis ? 'Back to Research' : 'Back'}
+        </Link>
+
+        {isAnalysis && (
+          <div className="analysis-stamp">Investment Analysis</div>
+        )}
+
         <header className="post-detail-header">
-          <span className={`post-card-category cat-${post.category.toLowerCase().replace(/[^a-z]/g, '-')}`}>
+          <span className={`post-card-category cat-${catSlug(post.category)}`}>
             {post.category}
           </span>
           <h1>{post.title}</h1>
-          <time className="post-detail-date">{formatDate(post.createdAt)}</time>
+          <div className="post-detail-meta">
+            <time className="post-detail-date">{formatDateLong(post.createdAt)}</time>
+            {!isAnalysis && (
+              <span className="post-reading-time">{readingTime(post.content)} min read</span>
+            )}
+          </div>
           {post.updatedAt && (
-            <span className="post-detail-updated">Edited {formatDate(post.updatedAt)}</span>
+            <span className="post-detail-updated">Edited {formatDateLong(post.updatedAt)}</span>
           )}
         </header>
 
@@ -61,9 +70,16 @@ export default function PostDetail({ posts, onDelete, onTogglePin }) {
           <button
             className="btn btn-ghost"
             onClick={() => onTogglePin(post.id)}
-            title={post.pinned ? 'Unpin this entry' : 'Pin to top of carousel'}
+            title={post.pinned ? 'Unpin this entry' : 'Pin to Featured Work'}
           >
             {post.pinned ? '★ Pinned' : '☆ Pin'}
+          </button>
+          <button
+            className={`btn btn-ghost${post.inProgress ? ' wip-active' : ''}`}
+            onClick={() => onToggleInProgress(post.id)}
+            title={post.inProgress ? 'Mark as complete' : 'Mark as in progress'}
+          >
+            {post.inProgress ? '⚡ In Progress' : '⚡︎ In Progress'}
           </button>
         </footer>
       </article>

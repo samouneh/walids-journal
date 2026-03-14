@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
-const INTERVAL = 5000;
+const INTERVAL  = 5000;
+const MAX_PINNED = 3;
+const MAX_RECENT = 5;
 
 function formatDate(iso) {
   return new Date(iso).toLocaleDateString('en-GB', {
@@ -9,37 +11,46 @@ function formatDate(iso) {
   });
 }
 
-function excerpt(text, max = 180) {
+function excerpt(text, max = 200) {
   const plain = text.replace(/[#*`>_~\[\]]/g, '').trim();
   return plain.length <= max ? plain : plain.slice(0, max).trimEnd() + '…';
 }
 
-export default function Sidebar({ posts, onTogglePin }) {
-  const featured = [
-    ...posts.filter((p) => p.pinned),
-    ...posts.filter((p) => !p.pinned),
-  ].slice(0, 8);
+function readingTime(content) {
+  return Math.max(1, Math.ceil(content.trim().split(/\s+/).length / 200));
+}
 
-  const [idx, setIdx] = useState(0);
+export default function Sidebar({ posts, onTogglePin }) {
+  const pinned = posts
+    .filter((p) => p.pinned)
+    .slice(0, MAX_PINNED);
+
+  const recent = posts
+    .filter((p) => !p.pinned)
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    .slice(0, MAX_RECENT);
+
+  /* Fallback: if everything is pinned, show all posts in carousel */
+  const carouselPosts = recent.length > 0 ? recent : posts.slice(0, MAX_RECENT);
+
+  const [idx, setIdx]     = useState(0);
   const [paused, setPaused] = useState(false);
   const timerRef = useRef(null);
 
-  // Reset index when posts list changes length
-  useEffect(() => { setIdx(0); }, [posts.length]);
+  useEffect(() => { setIdx(0); }, [carouselPosts.length]);
 
-  // Auto-advance
   useEffect(() => {
-    if (paused || featured.length <= 1) return;
+    if (paused || carouselPosts.length <= 1) return;
     timerRef.current = setInterval(() => {
-      setIdx((i) => (i + 1) % featured.length);
+      setIdx((i) => (i + 1) % carouselPosts.length);
     }, INTERVAL);
     return () => clearInterval(timerRef.current);
-  }, [paused, featured.length]);
+  }, [paused, carouselPosts.length]);
 
-  function prev() { setIdx((i) => (i - 1 + featured.length) % featured.length); }
-  function next() { setIdx((i) => (i + 1) % featured.length); }
+  function prev() { setIdx((i) => (i - 1 + carouselPosts.length) % carouselPosts.length); }
+  function next() { setIdx((i) => (i + 1) % carouselPosts.length); }
 
-  if (featured.length === 0) {
+  if (posts.length === 0) {
     return (
       <aside className="sidebar">
         <div className="sidebar-header">
@@ -53,7 +64,7 @@ export default function Sidebar({ posts, onTogglePin }) {
     );
   }
 
-  const post = featured[idx];
+  const post     = carouselPosts[idx];
   const catClass = `cat-${post.category.toLowerCase().replace(/[^a-z]/g, '-')}`;
 
   return (
@@ -62,9 +73,30 @@ export default function Sidebar({ posts, onTogglePin }) {
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
+      {/* ── Header ───────────────────────────────────────── */}
       <div className="sidebar-header">
         <span className="sidebar-title">Progress Log</span>
         <Link to="/archive" className="sidebar-view-all">View all →</Link>
+      </div>
+
+      {/* ── ★ Top (pinned strip) ─────────────────────────── */}
+      {pinned.length > 0 && (
+        <div className="sidebar-pinned-strip">
+          <p className="sidebar-section-label">
+            <span className="sidebar-section-star">★</span> Top
+          </p>
+          {pinned.map((p) => (
+            <Link key={p.id} to={`/post/${p.id}`} className="sidebar-pinned-row">
+              <span className="sidebar-pinned-row-title">{p.title}</span>
+              <span className="sidebar-pinned-row-date">{formatDate(p.createdAt)}</span>
+            </Link>
+          ))}
+        </div>
+      )}
+
+      {/* ── Recent (carousel) ────────────────────────────── */}
+      <div className="sidebar-section-label-wrap">
+        <p className="sidebar-section-label">Recent</p>
       </div>
 
       <div className="carousel">
@@ -73,6 +105,7 @@ export default function Sidebar({ posts, onTogglePin }) {
             <div className="carousel-slide-meta">
               <span className={`post-card-category ${catClass}`}>{post.category}</span>
               <span className="carousel-date">{formatDate(post.createdAt)}</span>
+              <span className="carousel-read-time">{readingTime(post.content)}m read</span>
             </div>
             <button
               className={`carousel-pin-btn ${post.pinned ? 'pinned' : ''}`}
@@ -83,7 +116,7 @@ export default function Sidebar({ posts, onTogglePin }) {
             </button>
           </div>
 
-          <Link to={`/post/${post.id}`} className="carousel-slide-title" style={{ textDecoration: 'none' }}>
+          <Link to={`/post/${post.id}`} className="carousel-slide-title">
             {post.title}
           </Link>
 
@@ -108,7 +141,7 @@ export default function Sidebar({ posts, onTogglePin }) {
         <div className="carousel-controls">
           <button className="carousel-nav-btn" onClick={prev} aria-label="Previous">‹</button>
           <div className="carousel-dots">
-            {featured.map((_, i) => (
+            {carouselPosts.map((_, i) => (
               <button
                 key={i}
                 className={`carousel-dot ${i === idx ? 'active' : ''}`}
