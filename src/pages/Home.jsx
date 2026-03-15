@@ -124,6 +124,25 @@ export default function Home({ posts, onTogglePin }) {
         <div className="hero-fade" aria-hidden="true" />
       </section>
 
+      {/* ── Now Dashboard ── */}
+      <div className="now-dashboard">
+        <span className="now-dashboard-live">
+          <span className="now-dashboard-dot" />
+          Now
+        </span>
+        <div className="now-dashboard-items">
+          <span className="now-dashboard-item">📐 Year 2 · Chemical &amp; Petroleum Engineering</span>
+          <span className="now-dashboard-item">📊 Studying IMC</span>
+          <span className="now-dashboard-item">🏆 Hackathon Winner · Encode London</span>
+          <span className="now-dashboard-item">🛠 Building Journal AI</span>
+          {nowPosts.map(p => (
+            <Link key={p.id} to={`/post/${p.id}`} className="now-dashboard-item">
+              ✍️ {p.title}
+            </Link>
+          ))}
+        </div>
+      </div>
+
       {/* ── Stats ── */}
       <StatsBar posts={posts} />
 
@@ -136,26 +155,29 @@ export default function Home({ posts, onTogglePin }) {
               <h2 className="now-title">What I'm Working On Right Now</h2>
             </div>
           </Reveal>
-          <div className="now-grid">
+          <div className="now-timeline">
             {nowPosts.map((post, i) => {
               const depth = tagDepth(post);
               return (
                 <Reveal key={post.id} delay={i * 70}>
-                  <Link to={`/post/${post.id}`} className="now-card">
-                    <div className="now-card-top">
-                      <span className={`post-card-category cat-${catSlug(post.category)}`}>
-                        {post.category}
-                      </span>
-                      <span className="now-card-time">{relTime(post.createdAt)}</span>
-                    </div>
-                    <h3 className="now-card-title">{post.title}</h3>
-                    <p className="now-card-excerpt">{excerpt(post.content, 100)}</p>
-                    {depth > 0 && (
-                      <span className="now-card-depth">
-                        {depth} related {depth === 1 ? 'entry' : 'entries'} logged
-                      </span>
-                    )}
-                  </Link>
+                  <div className="now-timeline-item">
+                    <span className="now-timeline-dot" />
+                    <Link to={`/post/${post.id}`} className="now-card">
+                      <div className="now-card-top">
+                        <span className={`post-card-category cat-${catSlug(post.category)}`}>
+                          {post.category}
+                        </span>
+                        <span className="now-card-time">{relTime(post.createdAt)}</span>
+                      </div>
+                      <h3 className="now-card-title">{post.title}</h3>
+                      <p className="now-card-excerpt">{excerpt(post.content, 100)}</p>
+                      {depth > 0 && (
+                        <span className="now-card-depth">
+                          {depth} related {depth === 1 ? 'entry' : 'entries'} logged
+                        </span>
+                      )}
+                    </Link>
+                  </div>
                 </Reveal>
               );
             })}
