@@ -194,6 +194,31 @@ a:hover { color: var(--accent-hover); }
   transition: width .3s cubic-bezier(.16, 1, .3, 1);
 }
 
+/* Nav actions group */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  flex-shrink: 0;
+}
+
+.nav-email-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  transition: color .15s, border-color .15s, background .15s;
+}
+.nav-email-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-lo);
+}
+
 /* Dark mode toggle */
 .nav-theme-toggle {
   background: none;
@@ -2717,4 +2742,44 @@ a.now-dashboard-item:hover {
   color: var(--muted);
   margin-bottom: 1.25rem;
   line-height: 1.6;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════════════════════════════ */
+.site-footer {
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  padding: 1.5rem;
+  margin-top: 4rem;
+}
+
+.site-footer-inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .75rem;
+  flex-wrap: wrap;
+  font-size: .8rem;
+  color: var(--muted);
+}
+
+.site-footer-brand {
+  font-family: var(--font);
+  font-weight: 700;
+  color: var(--text-2);
+}
+
+.site-footer-sep { color: var(--border-hi); }
+
+.site-footer-email,
+.site-footer-link {
+  color: var(--muted);
+  transition: color .15s;
+}
+.site-footer-email:hover,
+.site-footer-link:hover {
+  color: var(--accent);
 }

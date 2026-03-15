@@ -55,14 +55,27 @@ export default function Nav() {
         <li><NavLink to="/archive">Archive</NavLink></li>
         <li><NavLink to="/admin">Admin</NavLink></li>
       </ul>
-      <button
-        className="nav-theme-toggle"
-        onClick={() => setDark(d => !d)}
-        aria-label="Toggle dark mode"
-        title={dark ? 'Switch to light mode' : 'Switch to dark mode'}
-      >
-        {dark ? '☀' : '☾'}
-      </button>
+      <div className="nav-actions">
+        <a
+          href="mailto:walidymessafer@gmail.com"
+          className="nav-email-btn"
+          aria-label="Email Walid"
+          title="walidymessafer@gmail.com"
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2"/>
+            <polyline points="2,4 12,13 22,4"/>
+          </svg>
+        </a>
+        <button
+          className="nav-theme-toggle"
+          onClick={() => setDark(d => !d)}
+          aria-label="Toggle dark mode"
+          title={dark ? 'Switch to light mode' : 'Switch to dark mode'}
+        >
+          {dark ? '☀' : '☾'}
+        </button>
+      </div>
     </nav>
   );
 }

@@ -41,6 +41,19 @@ export default function App() {
           <Route path="/admin/edit/:id"  element={<Admin posts={posts} onAdd={addPost} onEdit={editPost} onDelete={removePost} onTogglePin={togglePin} onToggleInProgress={toggleInProgress} />} />
         </Routes>
       </div>
+      <footer className="site-footer">
+        <div className="site-footer-inner">
+          <span className="site-footer-brand">Walid's Journal</span>
+          <span className="site-footer-sep">·</span>
+          <a href="mailto:walidymessafer@gmail.com" className="site-footer-email">
+            walidymessafer@gmail.com
+          </a>
+          <span className="site-footer-sep">·</span>
+          <a href="https://github.com/samouneh" target="_blank" rel="noreferrer" className="site-footer-link">
+            GitHub
+          </a>
+        </div>
+      </footer>
       <Chat />
     </BrowserRouter>
   );
