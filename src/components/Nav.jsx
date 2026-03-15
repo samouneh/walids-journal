@@ -28,6 +28,16 @@ export default function Nav() {
     }
   }
 
+  function goToWorkingOn(e) {
+    e.preventDefault();
+    if (location.pathname === '/') {
+      document.getElementById('working-on')?.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      sessionStorage.setItem('scrollTo', 'working-on');
+      navigate('/');
+    }
+  }
+
   return (
     <nav className="nav">
       <span className="nav-brand">Walid's Journal</span>
@@ -37,6 +47,9 @@ export default function Nav() {
           <a href="#topics" onClick={goToTopics} className="nav-topics-link">
             Topics
           </a>
+        </li>
+        <li>
+          <a href="#working-on" onClick={goToWorkingOn}>Working On</a>
         </li>
         <li><NavLink to="/research">Research</NavLink></li>
         <li><NavLink to="/archive">Archive</NavLink></li>

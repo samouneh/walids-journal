@@ -60,7 +60,7 @@ export default function Home({ posts, onTogglePin }) {
     return () => cancelAnimationFrame(rafId);
   }, []);
 
-  /* Scroll to #topics if navigated here with that intent */
+  /* Scroll to anchor if navigated here with that intent */
   useEffect(() => {
     const target = sessionStorage.getItem('scrollTo');
     if (target) {
@@ -145,51 +145,6 @@ export default function Home({ posts, onTogglePin }) {
       {/* ── Stats ── */}
       <StatsBar posts={posts} />
 
-      {/* ── What I'm Working On Right Now ── */}
-      {nowPosts.length > 0 && (
-        <section className="now-section">
-          <Reveal>
-            <div className="now-header">
-              <span className="now-pulse" aria-hidden="true" />
-              <h2 className="now-title">🔧🔨 What I'm Working On</h2>
-            </div>
-          </Reveal>
-          <div className="now-timeline">
-            {nowPosts.map((post, i) => {
-              const depth = tagDepth(post);
-              return (
-                <Reveal key={post.id} delay={i * 70}>
-                  <div className="now-timeline-item">
-                    <span className="now-timeline-dot" />
-                    <Link to={`/post/${post.id}`} className="now-card">
-                      <div className="now-card-top">
-                        <span className={`post-card-category cat-${catSlug(post.category)}`}>
-                          {post.category}
-                        </span>
-                        <span className="now-card-time">{relTime(post.createdAt)}</span>
-                      </div>
-                      <h3 className="now-card-title">{post.title}</h3>
-                      <p className="now-card-excerpt">{excerpt(post.content, 100)}</p>
-                      <div className="now-card-footer">
-                        {post.expectedFinish && (
-                          <span className="now-card-deadline">
-                            🎯 Due {new Date(post.expectedFinish).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-                          </span>
-                        )}
-                        {depth > 0 && (
-                          <span className="now-card-depth">
-                            {depth} related {depth === 1 ? 'entry' : 'entries'} logged
-                          </span>
-                        )}
-                      </div>
-                    </Link>
-                  </div>
-                </Reveal>
-              );
-            })}
-          </div>
-        </section>
-      )}
 
       {/* ── Featured Work (pinned posts) ── */}
       {featured.length > 0 && (
@@ -342,6 +297,57 @@ export default function Home({ posts, onTogglePin }) {
           <Sidebar posts={posts} onTogglePin={onTogglePin} />
         </Reveal>
       </div>
+
+      {/* ── Working On ── */}
+      <section id="working-on" className="now-section" style={{ marginTop: '4rem' }}>
+        <Reveal>
+          <div className="now-header">
+            <span className="now-pulse" aria-hidden="true" />
+            <h2 className="now-title">🔧🔨 Working On</h2>
+          </div>
+        </Reveal>
+
+        {nowPosts.length === 0 ? (
+          <Reveal>
+            <p className="now-empty">Nothing marked in progress yet — head to Admin to add entries.</p>
+          </Reveal>
+        ) : (
+          <div className="now-timeline">
+            {nowPosts.map((post, i) => {
+              const depth = tagDepth(post);
+              return (
+                <Reveal key={post.id} delay={i * 70}>
+                  <div className="now-timeline-item">
+                    <span className="now-timeline-dot" />
+                    <Link to={`/post/${post.id}`} className="now-card">
+                      <div className="now-card-top">
+                        <span className={`post-card-category cat-${catSlug(post.category)}`}>
+                          {post.category}
+                        </span>
+                        <span className="now-card-time">{relTime(post.createdAt)}</span>
+                      </div>
+                      <h3 className="now-card-title">{post.title}</h3>
+                      <p className="now-card-excerpt">{excerpt(post.content, 100)}</p>
+                      <div className="now-card-footer">
+                        {post.expectedFinish && (
+                          <span className="now-card-deadline">
+                            🎯 Due {new Date(post.expectedFinish).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                          </span>
+                        )}
+                        {depth > 0 && (
+                          <span className="now-card-depth">
+                            {depth} related {depth === 1 ? 'entry' : 'entries'} logged
+                          </span>
+                        )}
+                      </div>
+                    </Link>
+                  </div>
+                </Reveal>
+              );
+            })}
+          </div>
+        )}
+      </section>
     </>
   );
 }
