@@ -466,13 +466,30 @@ a.now-dashboard-item:hover {
   line-height: 1.55;
 }
 
+.now-card-footer {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin-top: .1rem;
+}
+
+.now-card-deadline {
+  font-size: .72rem;
+  font-weight: 600;
+  color: var(--gold);
+  background: var(--gold-lo);
+  border: 1px solid rgba(201,168,76,.2);
+  border-radius: 6px;
+  padding: .18rem .55rem;
+}
+
 .now-card-depth {
   font-size: .68rem;
   font-weight: 600;
   letter-spacing: .05em;
   text-transform: uppercase;
   color: var(--muted);
-  margin-top: .25rem;
 }
 
 /* In-progress active state on btn-ghost */

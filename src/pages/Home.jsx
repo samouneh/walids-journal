@@ -151,7 +151,7 @@ export default function Home({ posts, onTogglePin }) {
           <Reveal>
             <div className="now-header">
               <span className="now-pulse" aria-hidden="true" />
-              <h2 className="now-title">What I'm Working On Right Now</h2>
+              <h2 className="now-title">🔧🔨 What I'm Working On</h2>
             </div>
           </Reveal>
           <div className="now-timeline">
@@ -170,11 +170,18 @@ export default function Home({ posts, onTogglePin }) {
                       </div>
                       <h3 className="now-card-title">{post.title}</h3>
                       <p className="now-card-excerpt">{excerpt(post.content, 100)}</p>
-                      {depth > 0 && (
-                        <span className="now-card-depth">
-                          {depth} related {depth === 1 ? 'entry' : 'entries'} logged
-                        </span>
-                      )}
+                      <div className="now-card-footer">
+                        {post.expectedFinish && (
+                          <span className="now-card-deadline">
+                            🎯 Due {new Date(post.expectedFinish).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                          </span>
+                        )}
+                        {depth > 0 && (
+                          <span className="now-card-depth">
+                            {depth} related {depth === 1 ? 'entry' : 'entries'} logged
+                          </span>
+                        )}
+                      </div>
                     </Link>
                   </div>
                 </Reveal>

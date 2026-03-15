@@ -4,7 +4,7 @@ import { getPosts, savePosts } from '../utils/storage';
 
 const CATEGORIES = ['Markets & Investing', 'Financial Modelling', 'Reading & Research', 'Projects & Analysis', 'Industry Notes'];
 
-const EMPTY = { title: '', content: '', category: 'Markets & Investing', tags: '', type: 'journal' };
+const EMPTY = { title: '', content: '', category: 'Markets & Investing', tags: '', type: 'journal', expectedFinish: '' };
 
 function wordCount(text) {
   return text.trim() ? text.trim().split(/\s+/).length : 0;
@@ -24,11 +24,12 @@ export default function Admin({ posts, onAdd, onEdit, onDelete, onTogglePin, onT
   useEffect(() => {
     if (existing) {
       setForm({
-        title:    existing.title,
-        content:  existing.content,
-        category: existing.category,
-        tags:     existing.tags.join(', '),
-        type:     existing.type || 'journal',
+        title:          existing.title,
+        content:        existing.content,
+        category:       existing.category,
+        tags:           existing.tags.join(', '),
+        type:           existing.type || 'journal',
+        expectedFinish: existing.expectedFinish || '',
       });
     } else {
       setForm(EMPTY);
@@ -46,7 +47,7 @@ export default function Admin({ posts, onAdd, onEdit, onDelete, onTogglePin, onT
     setError('');
 
     const tags    = form.tags.split(',').map((t) => t.trim()).filter(Boolean);
-    const payload = { title: form.title.trim(), content: form.content.trim(), category: form.category, tags, type: form.type };
+    const payload = { title: form.title.trim(), content: form.content.trim(), category: form.category, tags, type: form.type, expectedFinish: form.expectedFinish || null };
 
     if (isEdit) onEdit(id, payload);
     else        onAdd(payload);
@@ -173,6 +174,15 @@ export default function Admin({ posts, onAdd, onEdit, onDelete, onTogglePin, onT
               value={form.tags}
               onChange={(e) => set('tags', e.target.value)}
               placeholder="DCF, VLOOKUP, ratio analysis…"
+            />
+          </label>
+
+          <label>
+            Expected finish <span className="field-hint">(optional — shows in Working On section)</span>
+            <input
+              type="date"
+              value={form.expectedFinish}
+              onChange={(e) => set('expectedFinish', e.target.value)}
             />
           </label>
 

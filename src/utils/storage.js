@@ -13,7 +13,7 @@ export function savePosts(posts) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
 }
 
-export function createPost({ title, content, category, tags, type }) {
+export function createPost({ title, content, category, tags, type, expectedFinish }) {
   const posts = getPosts();
   const post = {
     id: crypto.randomUUID(),
@@ -22,6 +22,7 @@ export function createPost({ title, content, category, tags, type }) {
     category,
     tags: tags || [],
     type: type || 'journal',
+    expectedFinish: expectedFinish || null,
     createdAt: new Date().toISOString(),
   };
   const next = [post, ...posts];
