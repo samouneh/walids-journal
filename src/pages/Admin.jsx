@@ -259,29 +259,37 @@ export default function Admin({ posts, onAdd, onEdit, onDelete, onTogglePin, onT
         <ul className="admin-post-list">
           {posts.map((post) => (
             <li key={post.id} className="admin-post-item">
-              <Link to={`/admin/edit/${post.id}`} className="admin-post-title">{post.title}</Link>
-              <span className="admin-post-category">{post.category}</span>
-              {post.type === 'analysis' && <span className="admin-post-type-badge">Analysis</span>}
-              <button
-                className={`admin-post-pin ${post.pinned ? 'pinned' : ''}`}
-                onClick={() => onTogglePin(post.id)}
-                title={post.pinned ? 'Unpin' : 'Pin to Featured Work'}
-              >
-                {post.pinned ? '★' : '☆'}
-              </button>
-              <button
-                className={`admin-post-wip ${post.inProgress ? 'active' : ''}`}
-                onClick={() => onToggleInProgress(post.id)}
-                title={post.inProgress ? 'Mark as complete' : 'Mark as in progress'}
-              >
-                {post.inProgress ? '⚡' : '⚡︎'}
-              </button>
-              <button
-                className="btn btn-danger btn-sm"
-                onClick={() => handleDelete(post.id)}
-              >
-                Delete
-              </button>
+              <div className="admin-post-main">
+                <Link to={`/admin/edit/${post.id}`} className="admin-post-title">{post.title}</Link>
+                <div className="admin-post-meta">
+                  <span className="admin-post-category">{post.category}</span>
+                  {post.type === 'analysis' && <span className="admin-post-type-badge">Analysis</span>}
+                  {post.pinned      && <span className="admin-post-status-badge pinned">Pinned</span>}
+                  {post.inProgress  && <span className="admin-post-status-badge wip">In Progress</span>}
+                </div>
+              </div>
+              <div className="admin-post-actions">
+                <button
+                  className={`admin-post-pin ${post.pinned ? 'pinned' : ''}`}
+                  onClick={() => onTogglePin(post.id)}
+                  title={post.pinned ? 'Unpin' : 'Pin to Featured Work'}
+                >
+                  {post.pinned ? '★' : '☆'}
+                </button>
+                <button
+                  className={`admin-post-wip ${post.inProgress ? 'active' : ''}`}
+                  onClick={() => onToggleInProgress(post.id)}
+                  title={post.inProgress ? 'Mark as complete' : 'Mark as in progress'}
+                >
+                  ⚡
+                </button>
+                <button
+                  className="btn btn-danger btn-sm"
+                  onClick={() => handleDelete(post.id)}
+                >
+                  Delete
+                </button>
+              </div>
             </li>
           ))}
         </ul>

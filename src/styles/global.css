@@ -1890,13 +1890,13 @@ a.now-dashboard-item:hover {
 .admin-post-item {
   display: flex;
   align-items: center;
-  gap: .6rem;
-  padding: .7rem .85rem;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: .85rem 1rem;
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  font-size: .85rem;
   background: var(--surface);
-  transition: all .2s;
+  transition: border-color .2s, box-shadow .2s;
 }
 
 .admin-post-item:hover {
@@ -1904,17 +1904,64 @@ a.now-dashboard-item:hover {
   box-shadow: var(--shadow-sm);
 }
 
-.admin-post-title {
+.admin-post-main {
   flex: 1;
-  font-weight: 500;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: .3rem;
+}
+
+.admin-post-title {
+  font-size: .875rem;
+  font-weight: 600;
+  color: var(--text);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: var(--text);
+}
+.admin-post-title:hover { color: var(--accent); }
+
+.admin-post-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .35rem;
 }
 
-.admin-post-title:hover { color: var(--accent); }
-.admin-post-category { font-size: .7rem; color: var(--muted); flex-shrink: 0; }
+.admin-post-category {
+  font-size: .68rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.admin-post-status-badge {
+  font-size: .62rem;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  padding: .1em .45em;
+  border-radius: 4px;
+}
+.admin-post-status-badge.pinned {
+  color: var(--gold);
+  background: var(--gold-lo);
+  border: 1px solid rgba(201,168,76,.25);
+}
+.admin-post-status-badge.wip {
+  color: #d97706;
+  background: rgba(217,119,6,.08);
+  border: 1px solid rgba(217,119,6,.2);
+}
+
+.admin-post-actions {
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  flex-shrink: 0;
+}
 
 .admin-post-pin {
   background: none;
@@ -1922,28 +1969,26 @@ a.now-dashboard-item:hover {
   cursor: pointer;
   font-size: .9rem;
   color: var(--muted);
-  padding: .15rem;
+  padding: .25rem;
   line-height: 1;
-  transition: all .2s;
-  flex-shrink: 0;
+  border-radius: 4px;
+  transition: color .2s, transform .2s;
 }
-
-.admin-post-pin:hover { transform: scale(1.25); }
-.admin-post-pin.pinned { color: var(--accent); }
+.admin-post-pin:hover { transform: scale(1.2); color: var(--gold); }
+.admin-post-pin.pinned { color: var(--gold); }
 
 .admin-post-wip {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: .95rem;
+  font-size: .9rem;
   color: var(--muted);
-  padding: .1rem .25rem;
+  padding: .25rem;
   border-radius: 4px;
   transition: color .2s, transform .2s;
-  flex-shrink: 0;
   line-height: 1;
 }
-.admin-post-wip:hover  { transform: scale(1.25); color: #d97706; }
+.admin-post-wip:hover  { transform: scale(1.2); color: #d97706; }
 .admin-post-wip.active { color: #d97706; }
 
 /* ═══════════════════════════════════════════════════════════════════
