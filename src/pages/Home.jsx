@@ -133,7 +133,6 @@ export default function Home({ posts, onTogglePin }) {
         <div className="now-dashboard-items">
           <span className="now-dashboard-item">📐 Year 2 · Chemical &amp; Petroleum Engineering</span>
           <span className="now-dashboard-item">📊 Studying IMC</span>
-          <span className="now-dashboard-item">🏆 Hackathon Winner · Encode London</span>
           <span className="now-dashboard-item">🛠 Building Journal AI</span>
           {nowPosts.map(p => (
             <Link key={p.id} to={`/post/${p.id}`} className="now-dashboard-item">
