@@ -11,6 +11,13 @@ export default function Nav() {
     localStorage.setItem('theme', dark ? 'dark' : 'light');
   }, [dark]);
 
+  function goHome(e) {
+    if (location.pathname === '/') {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
   function goToTopics(e) {
     e.preventDefault();
     if (location.pathname === '/') {
@@ -25,7 +32,7 @@ export default function Nav() {
     <nav className="nav">
       <span className="nav-brand">Walid's Journal</span>
       <ul className="nav-links">
-        <li><NavLink to="/" end>Home</NavLink></li>
+        <li><NavLink to="/" end onClick={goHome}>Home</NavLink></li>
         <li>
           <a href="#topics" onClick={goToTopics} className="nav-topics-link">
             Topics
