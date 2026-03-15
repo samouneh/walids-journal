@@ -22,7 +22,8 @@
   justify-content: center;
   box-shadow: 0 4px 16px rgba(30, 58, 95, 0.35);
   transition: transform 0.2s cubic-bezier(.16,1,.3,1), box-shadow 0.2s;
-  animation: fab-breathe 4s ease-in-out infinite;
+  animation: fab-breathe 5s ease-in-out infinite;
+  transform: scale(1.1);
 }
 .chat-fab:hover {
   transform: scale(1.1);
@@ -35,10 +36,15 @@
 .chat-fab svg { pointer-events: none; }
 
 @keyframes fab-breathe {
-  0%, 100% { transform: scale(1);    box-shadow: 0 4px 16px rgba(30,58,95,0.35); }
-  60%       { transform: scale(1.18); box-shadow: 0 8px 28px rgba(30,58,95,0.55); }
-  75%       { transform: scale(0.94); box-shadow: 0 3px 12px rgba(30,58,95,0.25); }
-  88%       { transform: scale(1.06); box-shadow: 0 5px 18px rgba(30,58,95,0.4); }
+  0%   { transform: scale(1.1);  box-shadow: 0 4px 16px rgba(30,58,95,0.35); }
+  20%  { transform: scale(2.0);  box-shadow: 0 12px 40px rgba(30,58,95,0.6); }
+  38%  { transform: scale(1.35); box-shadow: 0 6px 20px rgba(30,58,95,0.4); }
+  50%  { transform: scale(1.6);  box-shadow: 0 9px 30px rgba(30,58,95,0.5); }
+  63%  { transform: scale(1.25); box-shadow: 0 5px 18px rgba(30,58,95,0.38); }
+  74%  { transform: scale(1.45); box-shadow: 0 7px 24px rgba(30,58,95,0.45); }
+  84%  { transform: scale(1.18); box-shadow: 0 5px 16px rgba(30,58,95,0.35); }
+  92%  { transform: scale(1.28); box-shadow: 0 6px 20px rgba(30,58,95,0.4); }
+  100% { transform: scale(1.1);  box-shadow: 0 4px 16px rgba(30,58,95,0.35); }
 }
 
 /* ── Sparks ──────────────────────────────────────────────── */
@@ -48,24 +54,24 @@
   pointer-events: none;
   top: 50%;
   left: 50%;
-  width: 6px;
-  height: 6px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  background: #f0b429;
-  box-shadow: 0 0 4px rgba(240,180,41,0.9);
+  background: radial-gradient(circle, #ffe066 0%, #f0b429 60%, transparent 100%);
+  box-shadow: 0 0 8px 2px rgba(240,180,41,0.8);
   animation: spark-burst 2.4s ease-out infinite;
 }
 
-.spark-1 { animation-delay: 0s;    --tx: -28px; --ty: -32px; }
-.spark-2 { animation-delay: 0.6s;  --tx:  26px; --ty: -28px; }
-.spark-3 { animation-delay: 1.2s;  --tx: -30px; --ty:  18px; }
-.spark-4 { animation-delay: 1.8s;  --tx:  22px; --ty:  24px; }
+.spark-1 { animation-delay: 0s;    --tx: -36px; --ty: -40px; }
+.spark-2 { animation-delay: 0.6s;  --tx:  34px; --ty: -36px; }
+.spark-3 { animation-delay: 1.2s;  --tx: -38px; --ty:  26px; }
+.spark-4 { animation-delay: 1.8s;  --tx:  30px; --ty:  32px; }
 
 @keyframes spark-burst {
-  0%   { opacity: 0;   transform: translate(-50%, -50%) scale(0);   }
-  15%  { opacity: 1;   transform: translate(-50%, -50%) scale(1.2); }
-  60%  { opacity: 0.6; transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0.8); }
-  100% { opacity: 0;   transform: translate(calc(-50% + var(--tx) * 1.4), calc(-50% + var(--ty) * 1.4)) scale(0.3); }
+  0%   { opacity: 0;   transform: translate(-50%, -50%) scale(0);    filter: blur(0px); }
+  10%  { opacity: 1;   transform: translate(-50%, -50%) scale(1.4);  filter: blur(0px); }
+  55%  { opacity: 0.7; transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1); filter: blur(1px); }
+  100% { opacity: 0;   transform: translate(calc(-50% + var(--tx) * 1.5), calc(-50% + var(--ty) * 1.5)) scale(0.2); filter: blur(3px); }
 }
 
 /* ── Panel ───────────────────────────────────────────────── */
