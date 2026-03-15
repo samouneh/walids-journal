@@ -124,10 +124,10 @@ export default function Chat() {
           {/* Header */}
           <div className="chat-header">
             <div className="chat-header-left">
-              <div className="chat-header-dot" />
-              <div>
-                <h3>Ask about Walid</h3>
-                <p>AI · answers grounded in real data</p>
+              <div className="chat-avatar">W</div>
+              <div className="chat-header-info">
+                <h3>Walid's AI</h3>
+                <p><span className="chat-header-dot" /> Answers grounded in real data</p>
               </div>
             </div>
             <button className="chat-close" onClick={() => setOpen(false)} aria-label="Close">×</button>
@@ -136,18 +136,25 @@ export default function Chat() {
           {/* Messages */}
           <div className="chat-messages">
             {messages.length === 0 && !loading && (
-              <div className="chat-suggestions">
-                <p>Try asking</p>
-                {SUGGESTIONS.map(s => (
-                  <button key={s} className="chat-suggestion-btn" onClick={() => sendMessage(s)}>
-                    {s}
-                  </button>
-                ))}
-              </div>
+              <>
+                <div className="chat-welcome">
+                  <div className="chat-welcome-avatar">W</div>
+                  <h4>Ask me anything</h4>
+                  <p>I can tell you about Walid's background, projects, skills and interests.</p>
+                </div>
+                <div className="chat-suggestions">
+                  {SUGGESTIONS.map(s => (
+                    <button key={s} className="chat-suggestion-btn" onClick={() => sendMessage(s)}>
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </>
             )}
 
             {messages.map((msg, i) => (
               <div key={i} className={`chat-msg ${msg.role}`}>
+                <span className="chat-msg-label">{msg.role === 'user' ? 'You' : "Walid's AI"}</span>
                 <div className="chat-bubble">
                   {msg.role === 'assistant'
                     ? <ReactMarkdown>{msg.content}</ReactMarkdown>
