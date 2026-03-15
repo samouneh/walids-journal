@@ -410,6 +410,18 @@
 }
 .chat-send:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none; }
 
+/* ── Tablet ──────────────────────────────────────────────── */
+
+@media (max-width: 768px) and (min-width: 481px) {
+  .chat-panel {
+    width: 340px;
+    height: 480px;
+    right: 1rem;
+    bottom: calc(1rem + 52px + 0.75rem);
+  }
+  .chat-fab-wrapper { bottom: 1rem; right: 1rem; }
+}
+
 /* ── Mobile ──────────────────────────────────────────────── */
 
 @media (max-width: 480px) {

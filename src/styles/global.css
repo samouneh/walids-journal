@@ -72,6 +72,19 @@
   border-color: rgba(37, 53, 80, 0.5);
 }
 
+/* Category badges — brighter in dark mode */
+[data-theme="dark"] .cat-markets---investing  { background: rgba(37,99,235,.15);  color: #60a5fa; }
+[data-theme="dark"] .cat-financial-modelling  { background: rgba(5,150,105,.15);  color: #34d399; }
+[data-theme="dark"] .cat-reading---research   { background: rgba(217,119,6,.15);  color: #fbbf24; }
+[data-theme="dark"] .cat-projects---analysis  { background: rgba(124,58,237,.15); color: #a78bfa; }
+[data-theme="dark"] .cat-industry-notes       { background: rgba(75,85,99,.15);   color: #9ca3af; }
+
+/* Heatmap cells — use gold tones in dark mode */
+[data-theme="dark"] .heatmap-cell.level-1 { background: rgba(201,168,76,.15); }
+[data-theme="dark"] .heatmap-cell.level-2 { background: rgba(201,168,76,.3); }
+[data-theme="dark"] .heatmap-cell.level-3 { background: rgba(201,168,76,.5); }
+[data-theme="dark"] .heatmap-cell.level-4 { background: var(--gold); }
+
 html { font-size: 16px; scroll-behavior: smooth; }
 
 body {
@@ -89,6 +102,13 @@ body {
    before any JS bundle is parsed. See #page-loader there. */
 
 ::selection { background: var(--accent); color: #fff; }
+
+/* Global keyboard-only focus ring */
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+:focus:not(:focus-visible) { outline: none; }
 
 a { color: var(--accent); text-decoration: none; transition: color .2s; }
 a:hover { color: var(--accent-hover); }
@@ -1020,9 +1040,9 @@ a.now-dashboard-item:hover {
   font-weight: 600;
   letter-spacing: .06em;
   text-transform: uppercase;
-  color: #d4af37;
-  background: rgba(212, 175, 55, 0.1);
-  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: var(--gold);
+  background: var(--gold-lo);
+  border: 1px solid rgba(201, 168, 76, 0.3);
   border-radius: 4px;
   padding: .1em .45em;
   vertical-align: middle;
@@ -1045,7 +1065,7 @@ a.now-dashboard-item:hover {
   border-top: 1px solid var(--border);
 }
 
-.sidebar-section-star { color: #d4af37; }
+.sidebar-section-star { color: var(--gold); }
 
 /* ─── Pinned strip ─────────────────────────────────────────────── */
 .sidebar-pinned-strip {
@@ -1707,11 +1727,11 @@ a.now-dashboard-item:hover {
 }
 
 .archive-item-pin:hover { transform: scale(1.2); }
-.archive-item-pin.pinned { color: #d4af37; }
+.archive-item-pin.pinned { color: var(--gold); }
 
 /* Pinned item highlight — subtle left accent in timeline */
 .archive-item--pinned {
-  border-left: 2px solid #d4af37;
+  border-left: 2px solid var(--gold);
   padding-left: .75rem;
   margin-left: -.75rem;
 }
@@ -1725,7 +1745,7 @@ a.now-dashboard-item:hover {
   display: flex;
   align-items: center;
   gap: .4rem;
-  color: #d4af37;
+  color: var(--gold);
 }
 
 .pinned-star {
@@ -1735,14 +1755,14 @@ a.now-dashboard-item:hover {
 
 /* Pinned filter button in toolbar */
 .pinned-filter-btn {
-  color: #d4af37 !important;
-  border-color: rgba(212, 175, 55, 0.35) !important;
+  color: var(--gold) !important;
+  border-color: rgba(201, 168, 76, 0.35) !important;
 }
 
 .pinned-filter-btn.active {
-  background: rgba(212, 175, 55, 0.12) !important;
-  border-color: #d4af37 !important;
-  color: #b8960f !important;
+  background: var(--gold-lo) !important;
+  border-color: var(--gold) !important;
+  color: var(--gold) !important;
 }
 
 /* Divider between pinned and regular grid sections */
@@ -1754,8 +1774,8 @@ a.now-dashboard-item:hover {
 
 /* Pinned grid card accent */
 .archive-grid-card--pinned {
-  border-color: rgba(212, 175, 55, 0.4);
-  box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.15), var(--shadow);
+  border-color: rgba(201, 168, 76, 0.4);
+  box-shadow: 0 0 0 1px rgba(201, 168, 76, 0.15), var(--shadow);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
