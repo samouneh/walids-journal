@@ -2134,6 +2134,22 @@ a.now-dashboard-item:hover {
 }
 .admin-list-header h2 { margin-bottom: 0; }
 
+.admin-list-title-row {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+
+.admin-autosave {
+  font-size: .68rem;
+  font-weight: 600;
+  color: var(--green);
+  background: rgba(5,150,105,.08);
+  border: 1px solid rgba(5,150,105,.2);
+  border-radius: 6px;
+  padding: .2rem .55rem;
+}
+
 .admin-backup-btns {
   display: flex;
   gap: .4rem;

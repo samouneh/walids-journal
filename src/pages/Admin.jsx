@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import { getPosts, savePosts } from '../utils/storage';
+import { getPosts, savePosts, getBackupTimestamp } from '../utils/storage';
 
 const CATEGORIES = ['Markets & Investing', 'Financial Modelling', 'Reading & Research', 'Projects & Analysis', 'Industry Notes'];
 
@@ -238,7 +238,14 @@ export default function Admin({ posts, onAdd, onEdit, onDelete, onTogglePin, onT
       {/* ── Right: post list + backup controls ── */}
       <div className="admin-list-col">
         <div className="admin-list-header">
-          <h2>All Entries</h2>
+          <div className="admin-list-title-row">
+            <h2>All Entries</h2>
+            {getBackupTimestamp() && (
+              <span className="admin-autosave">
+                ✓ Auto-saved {new Date(getBackupTimestamp()).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
+              </span>
+            )}
+          </div>
           <div className="admin-backup-btns">
             <button
               className="btn btn-ghost btn-sm"

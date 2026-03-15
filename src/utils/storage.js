@@ -1,9 +1,22 @@
-const STORAGE_KEY = 'finance_blog_posts';
+const STORAGE_KEY   = 'finance_blog_posts';
+const BACKUP_KEY    = 'finance_blog_posts_bak';
+const BACKUP_TS_KEY = 'finance_blog_posts_bak_ts';
 
 export function getPosts() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
+    const posts = raw ? JSON.parse(raw) : [];
+    if (posts.length > 0) return posts;
+    // Auto-restore from backup if main key is empty
+    const bak = localStorage.getItem(BACKUP_KEY);
+    if (bak) {
+      const restored = JSON.parse(bak);
+      if (restored.length > 0) {
+        localStorage.setItem(STORAGE_KEY, bak);
+        return restored;
+      }
+    }
+    return [];
   } catch {
     return [];
   }
@@ -11,6 +24,13 @@ export function getPosts() {
 
 export function savePosts(posts) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
+  // Keep a rolling backup + timestamp
+  localStorage.setItem(BACKUP_KEY,    JSON.stringify(posts));
+  localStorage.setItem(BACKUP_TS_KEY, new Date().toISOString());
+}
+
+export function getBackupTimestamp() {
+  return localStorage.getItem(BACKUP_TS_KEY);
 }
 
 export function createPost({ title, content, category, tags, type, expectedFinish }) {
