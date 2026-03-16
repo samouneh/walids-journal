@@ -1,61 +1,82 @@
-import { useState, useCallback } from 'react';
-import {
-  getPosts,
-  createPost,
-  updatePost,
-  deletePost,
-  togglePin as togglePinStorage,
-  toggleInProgress as toggleInProgressStorage,
-} from '../utils/storage';
+import { useState, useCallback, useEffect } from 'react';
+import * as api from '../utils/api';
 
-const API_URL      = import.meta.env.VITE_API_URL      || 'http://localhost:8000';
-const INGEST_SECRET = import.meta.env.VITE_INGEST_SECRET || '';
+const CACHE_KEY = 'finance_blog_posts';
 
-async function syncPost(post) {
-  if (!INGEST_SECRET) return;
-  try {
-    await fetch(`${API_URL}/ingest-post`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Ingest-Secret': INGEST_SECRET },
-      body: JSON.stringify({ id: post.id, title: post.title, content: post.content, category: post.category, tags: post.tags }),
-    });
-  } catch { /* silent — don't break the UI */ }
+function getCached() {
+  try { return JSON.parse(localStorage.getItem(CACHE_KEY) || '[]'); }
+  catch { return []; }
 }
 
-async function unsyncPost(postId) {
-  if (!INGEST_SECRET) return;
-  try {
-    await fetch(`${API_URL}/ingest-post/${postId}`, {
-      method: 'DELETE',
-      headers: { 'X-Ingest-Secret': INGEST_SECRET },
-    });
-  } catch { /* silent */ }
+function setCache(posts) {
+  try { localStorage.setItem(CACHE_KEY, JSON.stringify(posts)); } catch {}
 }
 
 export function usePosts() {
-  const [posts, setPosts] = useState(() => getPosts());
+  const [posts, setPosts]     = useState(getCached);
+  const [loading, setLoading] = useState(true);
+  const [error, setError]     = useState(null);
 
-  const refresh = useCallback(() => setPosts(getPosts()), []);
-
-  const addPost = useCallback((fields) => {
-    const next = createPost(fields);
-    setPosts(next);
-    syncPost(next[0]); // newest post is always first
+  const refresh = useCallback(async () => {
+    try {
+      const data = await api.fetchPosts();
+      setPosts(data);
+      setCache(data);
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  const editPost = useCallback((id, fields) => {
-    const next = updatePost(id, fields);
-    setPosts(next);
-    syncPost(next.find(p => p.id === id));
+  useEffect(() => { refresh(); }, [refresh]);
+
+  const addPost = useCallback(async (fields) => {
+    const created = await api.createPost(fields);
+    setPosts(prev => {
+      const next = [created, ...prev];
+      setCache(next);
+      return next;
+    });
+    return created;
   }, []);
 
-  const removePost = useCallback((id) => {
-    setPosts(deletePost(id));
-    unsyncPost(id);
+  const editPost = useCallback(async (id, fields) => {
+    const updated = await api.updatePost(id, fields);
+    setPosts(prev => {
+      const next = prev.map(p => p.id === id ? updated : p);
+      setCache(next);
+      return next;
+    });
   }, []);
 
-  const togglePin        = useCallback((id) => setPosts(togglePinStorage(id)), []);
-  const toggleInProgress = useCallback((id) => setPosts(toggleInProgressStorage(id)), []);
+  const removePost = useCallback(async (id) => {
+    await api.deletePost(id);
+    setPosts(prev => {
+      const next = prev.filter(p => p.id !== id);
+      setCache(next);
+      return next;
+    });
+  }, []);
 
-  return { posts, refresh, addPost, editPost, removePost, togglePin, toggleInProgress };
+  const togglePin = useCallback(async (id) => {
+    const updated = await api.togglePin(id);
+    setPosts(prev => {
+      const next = prev.map(p => p.id === id ? updated : p);
+      setCache(next);
+      return next;
+    });
+  }, []);
+
+  const toggleInProgress = useCallback(async (id) => {
+    const updated = await api.toggleInProgress(id);
+    setPosts(prev => {
+      const next = prev.map(p => p.id === id ? updated : p);
+      setCache(next);
+      return next;
+    });
+  }, []);
+
+  return { posts, loading, error, refresh, addPost, editPost, removePost, togglePin, toggleInProgress };
 }

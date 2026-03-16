@@ -17,10 +17,14 @@ export default function PostDetail({ posts, onDelete, onTogglePin, onToggleInPro
     );
   }
 
-  function handleDelete() {
+  async function handleDelete() {
     if (window.confirm('Delete this post?')) {
-      onDelete(post.id);
-      navigate('/');
+      try {
+        await onDelete(post.id);
+        navigate('/');
+      } catch {
+        alert('Failed to delete post.');
+      }
     }
   }
 

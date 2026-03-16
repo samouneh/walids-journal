@@ -8,12 +8,7 @@ import Archive from './pages/Archive';
 import Admin from './pages/Admin';
 import Research from './pages/Research';
 import { usePosts } from './hooks/usePosts';
-import { seedIfEmpty } from './utils/seed';
-import { migrateCategories } from './utils/storage';
 import './styles/global.css';
-
-seedIfEmpty();
-migrateCategories();
 
 export default function App() {
   const { posts, addPost, editPost, removePost, togglePin, toggleInProgress } = usePosts();

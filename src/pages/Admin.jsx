@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import { getPosts, savePosts, getBackupTimestamp } from '../utils/storage';
 
 const CATEGORIES = ['Markets & Investing', 'Financial Modelling', 'Reading & Research', 'Projects & Analysis', 'Industry Notes'];
 
@@ -40,7 +39,7 @@ export default function Admin({ posts, onAdd, onEdit, onDelete, onTogglePin, onT
     setForm((f) => ({ ...f, [field]: value }));
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     if (!form.title.trim())   { setError('Title is required.');   return; }
     if (!form.content.trim()) { setError('Content is required.'); return; }
@@ -49,14 +48,22 @@ export default function Admin({ posts, onAdd, onEdit, onDelete, onTogglePin, onT
     const tags    = form.tags.split(',').map((t) => t.trim()).filter(Boolean);
     const payload = { title: form.title.trim(), content: form.content.trim(), category: form.category, tags, type: form.type, expectedFinish: form.expectedFinish || null };
 
-    if (isEdit) onEdit(id, payload);
-    else        onAdd(payload);
-    navigate('/');
+    try {
+      if (isEdit) await onEdit(id, payload);
+      else        await onAdd(payload);
+      navigate('/');
+    } catch {
+      setError('Failed to save — check your connection and try again.');
+    }
   }
 
-  function handleDelete(postId) {
+  async function handleDelete(postId) {
     if (window.confirm('Delete this post? This cannot be undone.')) {
-      onDelete(postId);
+      try {
+        await onDelete(postId);
+      } catch {
+        alert('Failed to delete post.');
+      }
     }
   }
 
@@ -79,7 +86,7 @@ export default function Admin({ posts, onAdd, onEdit, onDelete, onTogglePin, onT
 
   /* ── Export all posts as a JSON backup file ── */
   function handleExport() {
-    const data = JSON.stringify(getPosts(), null, 2);
+    const data = JSON.stringify(posts, null, 2);
     const blob = new Blob([data], { type: 'application/json' });
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
@@ -94,16 +101,29 @@ export default function Admin({ posts, onAdd, onEdit, onDelete, onTogglePin, onT
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (evt) => {
+    reader.onload = async (evt) => {
       try {
         const data = JSON.parse(evt.target.result);
         if (!Array.isArray(data)) throw new Error('Not an array');
-        if (window.confirm(`Import ${data.length} posts? This will replace ALL current posts.`)) {
-          savePosts(data);
-          window.location.reload();
+        if (window.confirm(`Import ${data.length} posts? This will add them to the database.`)) {
+          for (const post of data) {
+            await onAdd({
+              id: post.id,
+              title: post.title,
+              content: post.content,
+              category: post.category,
+              tags: post.tags || [],
+              type: post.type || 'journal',
+              expectedFinish: post.expectedFinish || null,
+              createdAt: post.createdAt || null,
+              pinned: post.pinned || false,
+              inProgress: post.inProgress || false,
+            });
+          }
+          alert(`Imported ${data.length} posts.`);
         }
       } catch {
-        alert('Invalid backup file — make sure it was exported from this journal.');
+        alert('Import failed — check the file format and try again.');
       }
     };
     reader.readAsText(file);
@@ -240,11 +260,6 @@ export default function Admin({ posts, onAdd, onEdit, onDelete, onTogglePin, onT
         <div className="admin-list-header">
           <div className="admin-list-title-row">
             <h2>All Entries</h2>
-            {getBackupTimestamp() && (
-              <span className="admin-autosave">
-                ✓ Auto-saved {new Date(getBackupTimestamp()).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
-              </span>
-            )}
           </div>
           <div className="admin-backup-btns">
             <button
