@@ -1,8 +1,8 @@
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-const SECRET  = import.meta.env.VITE_INGEST_SECRET || '';
 
 function authHeaders() {
-  return SECRET ? { 'X-Ingest-Secret': SECRET } : {};
+  const token = sessionStorage.getItem('admin_token');
+  return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
 export async function fetchPosts() {

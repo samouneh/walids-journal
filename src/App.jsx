@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Nav from './components/Nav';
 import Chat from './components/Chat';
+import AdminGate from './components/AdminGate';
 import Home from './pages/Home';
 import PostDetail from './pages/PostDetail';
 import Archive from './pages/Archive';
@@ -32,8 +33,8 @@ export default function App() {
           <Route path="/post/:id"        element={<PostDetail posts={posts} onDelete={removePost} onTogglePin={togglePin} onToggleInProgress={toggleInProgress} />} />
           <Route path="/archive"         element={<Archive posts={posts} onTogglePin={togglePin} />} />
           <Route path="/research"        element={<Research posts={posts} />} />
-          <Route path="/admin"           element={<Admin posts={posts} onAdd={addPost} onEdit={editPost} onDelete={removePost} onTogglePin={togglePin} onToggleInProgress={toggleInProgress} />} />
-          <Route path="/admin/edit/:id"  element={<Admin posts={posts} onAdd={addPost} onEdit={editPost} onDelete={removePost} onTogglePin={togglePin} onToggleInProgress={toggleInProgress} />} />
+          <Route path="/admin"           element={<AdminGate><Admin posts={posts} onAdd={addPost} onEdit={editPost} onDelete={removePost} onTogglePin={togglePin} onToggleInProgress={toggleInProgress} /></AdminGate>} />
+          <Route path="/admin/edit/:id"  element={<AdminGate><Admin posts={posts} onAdd={addPost} onEdit={editPost} onDelete={removePost} onTogglePin={togglePin} onToggleInProgress={toggleInProgress} /></AdminGate>} />
         </Routes>
       </div>
       <footer className="site-footer">
