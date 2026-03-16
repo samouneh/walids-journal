@@ -57,7 +57,7 @@ export default function Admin({ posts, onAdd, onEdit, onDelete, onTogglePin, onT
         setForm(EMPTY);
       }
     } catch {
-      setError('Failed to save — check your connection and try again.');
+      setError('Failed to save. Check your connection and try again.');
     }
   }
 
@@ -127,7 +127,7 @@ export default function Admin({ posts, onAdd, onEdit, onDelete, onTogglePin, onT
           alert(`Imported ${data.length} posts.`);
         }
       } catch {
-        alert('Import failed — check the file format and try again.');
+        alert('Import failed. Check the file format and try again.');
       }
     };
     reader.readAsText(file);
@@ -158,7 +158,7 @@ export default function Admin({ posts, onAdd, onEdit, onDelete, onTogglePin, onT
               type="text"
               value={form.title}
               onChange={(e) => set('title', e.target.value)}
-              placeholder={form.type === 'analysis' ? 'e.g. BP plc — Buy | Target: 650p' : 'What did you work on?'}
+              placeholder={form.type === 'analysis' ? 'e.g. BP plc - Buy | Target: 650p' : 'What did you work on?'}
             />
           </label>
 
@@ -202,7 +202,7 @@ export default function Admin({ posts, onAdd, onEdit, onDelete, onTogglePin, onT
           </label>
 
           <label>
-            Expected finish <span className="field-hint">(optional — shows in Working On section)</span>
+            Expected finish <span className="field-hint">(optional, shows in Working On section)</span>
             <input
               type="date"
               value={form.expectedFinish}

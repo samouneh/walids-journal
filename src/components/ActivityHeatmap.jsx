@@ -70,7 +70,7 @@ export default function ActivityHeatmap({ posts }) {
 
   return (
     <div className="heatmap-wrap">
-      <p className="heatmap-title">Learning Activity — Last 12 Months</p>
+      <p className="heatmap-title">Learning Activity - Last 12 Months</p>
       <div className="heatmap-outer">
         {/* Month labels */}
         <div className="heatmap-month-labels" style={{ width: totalWidth + 'px' }}>

@@ -149,7 +149,7 @@ export default function Archive({ posts, onTogglePin }) {
           {posts.length === 0
             ? <p>No entries yet. <Link to="/admin">Add your first entry →</Link></p>
             : showPinnedOnly
-            ? <p>No pinned entries yet — star any entry to surface it here.</p>
+            ? <p>No pinned entries yet. Star any entry to surface it here.</p>
             : <p>No entries match your filters.</p>
           }
         </div>

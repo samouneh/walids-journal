@@ -53,7 +53,7 @@ export default function AdminGate({ children }) {
       sessionStorage.setItem(TOKEN_KEY, token);
       setState('unlocked');
     } catch {
-      setError('Connection failed — try again');
+      setError('Connection failed. Try again.');
     }
   }
 

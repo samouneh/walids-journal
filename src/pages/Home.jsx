@@ -214,7 +214,7 @@ export default function Home({ posts, onTogglePin }) {
                       <p className="topic-card-excerpt">{excerpt(t.latest.content)}</p>
                     </div>
                   ) : (
-                    <p className="topic-card-empty">No entries yet — start writing →</p>
+                    <p className="topic-card-empty">No entries yet. Start writing</p>
                   )}
 
                   <span className="topic-card-cta">Browse {t.cat} →</span>
@@ -309,7 +309,7 @@ export default function Home({ posts, onTogglePin }) {
 
         {nowPosts.length === 0 ? (
           <Reveal>
-            <p className="now-empty">Nothing marked in progress yet — head to Admin to add entries.</p>
+            <p className="now-empty">Nothing marked in progress yet. Head to Admin to add entries.</p>
           </Reveal>
         ) : (
           <div className="now-timeline">
