@@ -49,9 +49,13 @@ export default function Admin({ posts, onAdd, onEdit, onDelete, onTogglePin, onT
     const payload = { title: form.title.trim(), content: form.content.trim(), category: form.category, tags, type: form.type, expectedFinish: form.expectedFinish || null };
 
     try {
-      if (isEdit) await onEdit(id, payload);
-      else        await onAdd(payload);
-      navigate('/');
+      if (isEdit) {
+        await onEdit(id, payload);
+        navigate('/');
+      } else {
+        await onAdd(payload);
+        setForm(EMPTY);
+      }
     } catch {
       setError('Failed to save — check your connection and try again.');
     }
